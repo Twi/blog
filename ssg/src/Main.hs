@@ -23,22 +23,22 @@ import Text.Pandoc.Highlighting (Style, breezeDark, styleToCss)
 -- PERSONALIZATION
 
 mySiteName :: String
-mySiteName = "My Site Name"
+mySiteName = "Twilight Sparkle\'s Friendship Castle"
 
 mySiteRoot :: String
-mySiteRoot = "https://my-site.com"
+mySiteRoot = "https://twi.github.io/blog"
 
 myFeedTitle :: String
-myFeedTitle = "My Feed Title"
+myFeedTitle = "Twilight Sparkle's Friendship Castle"
 
 myFeedDescription :: String
-myFeedDescription = "My Site Description"
+myFeedDescription = "Twilight Sparkle's blog"
 
 myFeedAuthorName :: String
-myFeedAuthorName = "My Name"
+myFeedAuthorName = "Twilight Sparkle"
 
 myFeedAuthorEmail :: String
-myFeedAuthorEmail = "me@myemail.com"
+myFeedAuthorEmail = "twipony.ts@gmail.com"
 
 myFeedRoot :: String
 myFeedRoot = mySiteRoot
@@ -52,7 +52,7 @@ config =
   defaultConfiguration
     { destinationDirectory = "dist"
     , ignoreFile = ignoreFile'
-    , previewHost = "127.0.0.1"
+    , previewHost = "0.0.0.0"
     , previewPort = 8000
     , providerDirectory = "src"
     , storeDirectory = "ssg/_cache"
@@ -166,6 +166,8 @@ postCtx =
   constField "root" mySiteRoot
     <> constField "feedTitle" myFeedTitle
     <> constField "siteName" mySiteName
+    <> constField "author" myFeedAuthorName
+    <> constField "lang" "en"
     <> dateField "date" "%Y-%m-%d"
     <> defaultContext
 

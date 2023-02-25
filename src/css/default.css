@@ -1,54 +1,32 @@
-:root {
-  font-size: 62.5%;
-  box-sizing: border-box;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
+html {
+  max-width: 70ch;
+  padding: 3em 1em;
+  margin: auto;
+  line-height: 1.75;
+  font-size: 1.25em;
+  color: #c155ad;
+  background-color: black;
 }
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+
+a:link {
+    color: #f1bda1;
 }
-html,
-body {
-  min-height: 100vh;
+
+a:visited {
+    color: #bd76f2;
 }
-body {
-  font-kerning: normal;
-  -moz-font-feature-settings: "kern", "liga", "clig", "calt";
-  -ms-font-feature-settings: "kern", "liga", "clig", "calt";
-  -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
-  font-feature-settings: "kern", "liga", "clig", "calt";
-  scroll-behavior: smooth;
-  font-size: 2rem;
-}
-body,
-input,
-button {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-h1,
-h2 {
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-}
-h1 {
-  font-size: 4.0rem;
-}
-h2 {
-  font-size: 2.6rem;
-}
-small,
-p {
-  font-family: Tahoma, Arial, sans-serif;
-}
-small {
-  font-size: 1.6rem;
-  font-style: italic;
-}
-p {
-  font-size: 1.8rem;
-}
-pre.sourceCode {
-  padding: 2rem 1.5rem;
+
+@media (prefers-color-scheme: light) {
+    html {
+        color: black;
+        background-color: #c155ad;
+    }
+
+    a:link {
+        color: #4325ad;
+    }
+
+    a:visited {
+        color: #d01973;
+    }
 }
