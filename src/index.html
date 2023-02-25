@@ -1,16 +1,15 @@
 ---
-desc: "This is me saying hello to the world"
-image: "./images/robert-pearce-UwHN0jU_YqQ-unsplash-800w.jpg"
+desc: "Twilight Sparkle's Blog"
+image: "./images/landscape.jpg"
 lang: "en"
 stylesheet: "default"
-title: "Hello, world!"
+title: "Twilight Sparkle's Friendship Castle"
 ---
 
 <header>
-  <h1>Hello, world!</h1>
+  <h1>Twilight Sparkle's Friendship Castle</h1>
   <img
-    alt="A woman sitting on a bench amongst trees at the end of a boardwalk leading to a pond with mountains in the background"
-    src="./images/robert-pearce-UwHN0jU_YqQ-unsplash-800w.jpg"
+    src="./images/landscape.jpg"
     height="300"
   />
 </header>
@@ -19,10 +18,7 @@ title: "Hello, world!"
     <h2>Blog Posts</h2>
     <ul>
       $for(posts)$
-        <li>
-          <div><a href=".$url$">$title$</a></div>
-          <small>$date$</small>
-        </li>
+        <li><div><small>$date$</small> - <a href=".$url$">$title$</a></div></li>
       $endfor$
     </ul>
   </section>
