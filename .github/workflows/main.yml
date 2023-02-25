@@ -49,6 +49,8 @@ jobs:
           path: result
 
       - name: Deploy to GitHub Pages
+        permissions: 
+          contents: write
         if: success()
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
