@@ -42,7 +42,6 @@ jobs:
     needs: [build-nix]
     permissions: 
       contents: write
-      metadata: read
 
     steps:
       - name: Download artifact
