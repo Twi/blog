@@ -1,5 +1,11 @@
 name: CI
 
+permissions: 
+  contents:
+    - write
+    - read
+  metadata: read
+
 on:
   pull_request:
   push:
@@ -49,8 +55,6 @@ jobs:
           path: result
 
       - name: Deploy to GitHub Pages
-        permissions: 
-          contents: write
         if: success()
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
