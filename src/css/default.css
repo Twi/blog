@@ -25,8 +25,8 @@ blockquote {
 
 @media (prefers-color-scheme: light) {
     html {
-        color: black;
-        background-color: #c155ad;
+        color: #030258;
+        background-color: white;
     }
 
     a:link {
