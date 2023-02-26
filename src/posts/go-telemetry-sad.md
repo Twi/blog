@@ -5,6 +5,10 @@ date: 2023-02-25
 image: /blog/images/librarian.jpg
 ---
 
+EDIT: Hi hacker news! A lot of this article is written under the
+premise of "if this thing that I am not sure about has to exist,
+opt-out is the best way to get actionable data". Thank you.
+
 On Feburary 8, 2023, Russ Cox (the technical lead for the
 Go programming language, aka rsc) published a series of posts about
 [Transparent Telemetry for Open-Source
