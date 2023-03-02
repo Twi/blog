@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Making Go telemetry opt-in is a mistake</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A hot take.">
+    
+    <meta name="author" content="Twilight Sparkle">
+    
+    
+
+    <meta property="og:site_name" content="Twilight Sparkle's Friendship Castle">
+    <meta property="og:title" content="Making Go telemetry opt-in is a mistake">
+    <meta property="og:url" content="https://twi.github.io/blog/making-go-telemetry-opt-in-is-a-mistake.html">
+    <meta property="og:description" content="A hot take.">
+    
+    <meta property="og:image" content="https://twi.github.io/blog/blog/images/librarian.jpg">
+    
+    
+    <meta property="og:type" content="article">
+    
+
+    
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:image" content="https://twi.github.io/blog/blog/images/librarian.jpg">
+    
+    <meta property="twitter:site" content="Twilight Sparkle's Friendship Castle">
+    <meta property="twitter:title" content="Making Go telemetry opt-in is a mistake">
+    <meta property="twitter:description" content="A hot take.">
+    
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://twi.github.io/blog/making-go-telemetry-opt-in-is-a-mistake.html">
+
+    <link rel="alternate" href="./atom.xml" title="Twilight Sparkle's Friendship Castle" type="application/atom+xml">
+    <link rel="alternate" href="./rss.xml" title="Twilight Sparkle's Friendship Castle" type="application/rss+xml">
+
+    <link rel="stylesheet" href="./css/default.css" />
+    <link rel="stylesheet" href="./css/code.css" />
+  </head>
+  <body>
+      <nav>
+          <a href="/blog">Home</a>
+      </nav>
+    <main>
+  <article>
+    <header>
+      <h1>
+        <a href="./making-go-telemetry-opt-in-is-a-mistake.html">Making Go telemetry opt-in is a mistake</a>
+      </h1>
+      <div>
+        2023-02-25 
+      </div>
+      
+        <img src="/blog/images/librarian.jpg" style="max-width:100%" />
+      
+    </header>
+    <section>
+      <p>EDIT: Hi hacker news! A lot of this article is written under the
+premise of “if this thing that I am not sure about has to exist,
+opt-out is the best way to get actionable data”. Thank you.</p>
+<p>On Feburary 8, 2023, Russ Cox (the technical lead for the
+Go programming language, aka rsc) published a series of posts about
+<a href="https://research.swtch.com/telemetry">Transparent Telemetry for Open-Source
+Projects</a>. This outlined a
+process and methodology for the Go team to figure out <em>what people
+using Go actually do with the language</em> in a way that:</p>
+<ul>
+<li>Does not collect private information (usernames, source code,
+package names).</li>
+<li>Allows them to figure out what people do with Go in the wild
+<em>without having to ask them</em> (this is more representative of how
+people <em>actually use the tool</em> rather than what they will claim when
+asked).</li>
+<li>Easily lets anyone investigate what data is being collected.</li>
+<li>Is easy to opt-out of at a user <em>and OS package distributor level</em>.</li>
+</ul>
+<p>And, most importantly:</p>
+<ul>
+<li>Allows researchers access to the data that is collected on a daily
+basis so they can do whatever analysis they want.</li>
+</ul>
+<p>In terms of how these systems are usually implemented, this is a
+<em>breath of fresh air</em> and gives people <em>a lot of transparency</em> that is
+unparallelled to how this is usually implemented in the industry at large.</p>
+<p>Unfortunately, the proposal came from a Google employee. Google has a
+reputation of taking user data and feeding it into piles of linear
+algebra in order to skew its search results to match your existing
+biases or whatever the hell else people do with linear algebra. The
+internet was not amused by this proposal. A shitstorm unlike any other
+seen in recent memory ensued. The backlash was immense, with many
+making empty threats to switch to Rust or something over the entire
+situation.</p>
+<p>At some point, the backlash got to be too severe and <a href="https://research.swtch.com/telemetry-opt-in">rsc announced
+things were going opt-in</a>
+on Feburary 24, 2023. I think that this is a mistake and will make the
+data collected by this telemetry system functionally useless. This
+will end up having the effect that it is a waste of time for them to
+implement this system at all, which will make the situation <em>worse off
+for everyone involved</em>.</p>
+<h2 id="my-biases">My biases</h2>
+<p>Before I come across as being some kind of paid Google shill, I want
+to start out by stating what I believe my biases <em>actually are</em> going
+into this:</p>
+<ul>
+<li>I have not ever worked for Google, nor do I plan to. The company is
+too big for me to want to work there.</li>
+<li>I use Go professionally and work for a company that uses Go in some
+fashion. This should go without saying, but anything I say in this
+blog is not representative of my employer, it is my own creation and
+this article was not approved by anyone at the company that feeds my
+crippling addiction to food and housing.</li>
+<li>I am a woman, that may have any number of biases in how I
+communicate.</li>
+</ul>
+<h2 id="the-problem-of-scrying-into-the-unknowable">The problem of scrying into the unknowable</h2>
+<p>Now with that out of the way, let’s cover the core problem that
+telemetry approaches try to solve: How do people use a tool? What
+features do they use? How often does the tool work? How often does it
+fail? What chronic issues are we missing?</p>
+<p>One of the most basic approaches to this is to just ask people how
+they use a tool and collect responses. This works to a point, but it
+does not scale very well.</p>
+<blockquote>
+<p>It’s a basic truth of the human condition that everybody lies. The
+only variable is about what.</p>
+</blockquote>
+<ul>
+<li>Dr. House</li>
+</ul>
+<p>People lie. People misremember. People construe their use of the tool
+with an NDA’d project to itself be NDA’d. The “just ask people lol”
+approach works at a very small scale, but not when that tool is used
+<a href="https://gcn.com/cloud-infrastructure/2020/01/why-the-air-force-put-kubernetes-in-an-f-16/284772/">to literally help fighter jets
+function</a>.</p>
+<p>At some level, when a tool gets widespread industry adoption, a lot of
+the ways that tool is used will never be talked about publicly. For
+every kilobyte of Go code available on GitHub, GitLab, and other Git
+forges, there are unknowable megabytes of private Go code that will
+never see the light of day (or maybe they will if LAPSUS$ decides to
+make that company a target). As a result:</p>
+<ul>
+<li>You will never know how the industry <em>actually uses tools that are
+widely adopted</em> by asking them.</li>
+<li>You will never know what features of tools are used by the industry
+by asking them.</li>
+<li>You will only find out what things fail if the user both thinks
+there is a problem <em>and takes the effort/expends social risk to file
+a bug</em>.</li>
+<li>You have to acceps that chronic issues fade into the ether of “oh
+that’s just how it is” without anyone taking the time to question
+them.</li>
+</ul>
+<p>At some level, the only way to get answers to these kinds of questions
+is to have the tool report data about how a tool is used to the
+maintainers of that tool. This is a common practice in the industry, I
+believe that this approach was first spearheaded by Microsoft when
+they added error reporting to Windows XP. That worked by showing a
+dialog box when a program crashed to submit details about that crash
+to Microsoft. The user had to say “yeah sure, send in the report”, and
+then it beamed it over to Redmond where they did…something with it.</p>
+<p>This kind of data collection has expanded across the industry to the
+point where modern Windows installation dialog boxes offer orwellian
+choices like:</p>
+<blockquote>
+<p>Can I do thing?</p>
+<p>[A little bit] [A lot]</p>
+</blockquote>
+<p>With no real option for “no, fuck no, not at all, go away”. This leads
+to backlash for taking this approach. This is super understandable.
+This kind of pattern matching is something that is baked into mammals
+deeply, because at some point some common ancestor invented trauma
+(and we are all fucked over because of that).</p>
+<p>With all this in mind, the only way to really know how someone uses a
+tool is to have the tool snitch on them. If they make the tool report
+its usage back to the home base, it raises questions about consent and
+the ethics of collecting data from someone that doesn’t know what that
+data is or what it will be used for.</p>
+<p>There is a rock and a hard place and reality is just slamming the Go
+team between both of them constantly.</p>
+<h2 id="how-transparent-telemetry-works">How “transparent telemetry” works</h2>
+<p>The transparent telemetry proposal is worth a read and when I’m
+writing this, I’m assuming that you actually read the proposal before
+reading this article. This is likely a mistake, so here’s a tl;dr of
+the proposal:</p>
+<ul>
+<li>Most telemetry approaches stream realtime userdata to analytics
+tools so that data analysts can do something with them. This
+approach instead focuses on having the Go tool occasionally query
+the Go module proxy for a configuration file <em>that you can inspect</em>
+and then uses that configuration file to collect information about
+future uses of the Go compiler. The Go tool will then report this
+information <em>some time in the future</em> instead of constantly like
+other ecosystems.</li>
+<li>Most telemetry approaches <em>start recording instantly</em> and can only
+stop when the user says “no, thank you”. This lets data analysts
+think they can understand the opt-out rate for telemetry (though,
+even without telemetry there are still a few ways that people can
+figure out what users are doing, they are just very annoying and
+again not representative of how people actually use the tool). The
+Go approach waits <em>one week</em> before even trying to activate the
+telemetry code, under the assumption that that is enough time to opt
+out.</li>
+<li>The collected data goes through many efforts to avoid including
+personally identifiable information, but apparently IP addresses are
+personally identifiable information and in order for data to be
+transmitted over the internet, an IP address is required as the
+source. This is unavoidable because this is HOW THE INTERNET WORKS.</li>
+<li>The collected telemetry data is put up to the public for anyone to
+analyze to their heart’s content. Most approaches take all this
+data, call it a secret and then hide it in S3 somewhere where random
+members of the public can’t see. It is difficult to overstate how
+<em>amazingly different</em> it is to see someone propose a system where
+they don’t hide away the data from the public.</li>
+</ul>
+<p>One of the key examples given for why this system was considered is
+an incident where the Go standard library mysteriously had a C
+dependency on macOS (for context: Go programs depending on the
+standard library alone <em>should not</em> require a C compiler):</p>
+<blockquote>
+<p>For example, during the Go 1.14 release process in early 2020 we
+made a change to the way macOS Go distributions are built, as part
+of keeping them acceptable to Apple’s signing tools. Unfortunately,
+the way we made the change also made all the pre-compiled <code>.a</code> files
+shipped in the distribution appear stale to builds. The effect was
+that the go command rebuilt and cached the standard library on first
+run, which meant that compiling any program using package net (which
+uses cgo) required Xcode to be installed. So Go 1.14 and later
+unintentionally required Xcode to compile even trivial demo Go
+programs like a basic HTTP server.</p>
+</blockquote>
+<ul>
+<li><a href="https://research.swtch.com/telemetry-intro">Transparent Telemetry for Open-Source
+Projects</a></li>
+</ul>
+<p>Developers using macOS are used to just installing Xcode to make the
+error messages go away, so they just installed Xcode and assumed it
+was normal behavior of the Go <em>compiler</em> to need you to install
+<em>compiler tools</em> in order to <em>compile programs</em>.</p>
+<p>Not to mention people relying on older hardware! Every so often a Go
+compiler backend/port gets proposed for removal and that removal shows
+up in release notes for release candidates. Then someone pipes up
+saying “hi, yes we use this please don’t do that” and then the Go team
+backs off and the old disused port lingers around for another release
+cycle.</p>
+<p>Without knowing what ports of Go are used, the Go team can’t make sure
+that the right time is spent on maintaining those ports. They need to
+know what is being used in order to know what is being used. Just
+asking people what targets they compile Go to doesn’t mean that the
+people using weird targets like <code>GOARM=5</code> or <code>-buildmode=shared</code> will
+say that that is what they use. Telemetry is the only real way to get
+this data. Transparent telemetry makes it transparent to all parties.</p>
+<p>This is overall a fantastic system that would allow any other projects
+to copy from and also have their own transparent telemetry approaches.
+If I was working on a project that would need telemetry, I would
+consider this approach because it is <em>exactly what I would want to
+do</em>. You collect only the data you need, none of the data you don’t,
+and you don’t hoard it all away from the public.</p>
+<h2 id="the-nerfening-of-transparent-telemetry">The nerfening of transparent telemetry</h2>
+<p>Sadly, I don’t think that this will be a new industry standard. The
+backlash to this approache was <em>immediate</em> and <em>immense</em>. It was not
+seen as “The Go team wants to make the Go compiler better” like they
+had hoped. It was seen as “Google wants to slurp up more information,
+this time about a compiler you’re forced to use for work”. This was
+met with exasperation and vitriol from all sides.</p>
+<p>Obviously there was enough backlash that <a href="https://research.swtch.com/telemetry-opt-in">they are changing the design
+from opt-out to opt-in</a>.
+I fear that this will bias the sample set and ultimately make this
+design worthless. When you make this data opt-in, it means the kind of
+people who would opt-in to telemetry collection will end up opting in.
+This will not collect information about most Go users, it will only
+collect information about Go users that know how to run <code>go env -w GOTELEMETRY=on</code>. Given past experiences with people reporting <code>GOPATH</code>
+to be a difficult thing to figure out, I don’t have faith that the
+opt-in rate will be high enough to make up for the loss of data
+quality.</p>
+<p>I don’t know what to do about this. It’s a shit situation all around
+and I fear that understandable concerns about privacy are going to
+make it harder for a tool that I rely on and helps me survive
+capitalism to truly improve.</p>
+<p>I just hope I don’t sound like a Google shill here. This design that
+someone working at Google proposed is the best way to do this kind of
+action. I guess a lot of the backlash is against the fact that the
+concept exists at all. I get it, but at some level leaving people
+alone doesn’t scale. You can’t know what someone is doing unless you
+see what they are doing.</p>
+    </section>
+  </article>
+</main>
+
+    <script defer src="./js/script.js"></script>
+  </body>
+</html>
